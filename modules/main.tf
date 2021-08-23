@@ -14,7 +14,7 @@ data "google_compute_subnetwork" "subnetwork" {
 
 resource "google_compute_region_backend_service" "backend_service" {
   project  = var.project_id
-  name     = "backend-${var.name}-${random_id.suffix.hex}}"
+  name     = "backend-${var.name}-${random_id.suffix.hex}"
   region   = var.region
   protocol = var.ip_protocol
   network  = data.google_compute_network.network.self_link
@@ -37,7 +37,7 @@ resource "google_compute_region_backend_service" "backend_service" {
 
 resource "google_compute_forwarding_rule" "forwarding_rule" {
   project               = var.project_id
-  name                  = "forwarder-${var.name}-${random_id.suffix.hex}}"
+  name                  = "forwarder-${var.name}-${random_id.suffix.hex}"
   region                = var.region
   network               = data.google_compute_network.network.self_link
   subnetwork            = data.google_compute_subnetwork.subnetwork.self_link
@@ -53,7 +53,7 @@ resource "google_compute_forwarding_rule" "forwarding_rule" {
 
 resource "google_compute_route" "route" {
   for_each     = { for dest_range in var.dest_ranges : dest_range.range => dest_range }
-  name         = "route-${var.name}-${replace(each.value.range, "//|\\./", "-")}-${random_id.suffix.hex}}"
+  name         = "route-${var.name}-${replace(each.value.range, "//|\\./", "-")}-${random_id.suffix.hex}"
   network      = data.google_compute_network.network.self_link
   priority     = each.value.priority
   dest_range   = each.value.range
@@ -65,7 +65,7 @@ resource "google_compute_health_check" "health_check_tcp" {
   provider = google-beta
   count    = var.health_check["type"] == "tcp" ? 1 : 0
   project  = var.project_id
-  name     = "hc-tcp-${var.name}-${random_id.suffix.hex}}"
+  name     = "hc-tcp-${var.name}-${random_id.suffix.hex}"
 
   timeout_sec         = var.health_check["timeout_sec"]
   check_interval_sec  = var.health_check["check_interval_sec"]
@@ -92,7 +92,7 @@ resource "google_compute_health_check" "health_check_http" {
   provider = google-beta
   count    = var.health_check["type"] == "http" ? 1 : 0
   project  = var.project_id
-  name     = "hc-http-${var.name}-${random_id.suffix.hex}}"
+  name     = "hc-http-${var.name}-${random_id.suffix.hex}"
 
   timeout_sec         = var.health_check["timeout_sec"]
   check_interval_sec  = var.health_check["check_interval_sec"]
@@ -119,7 +119,7 @@ resource "google_compute_health_check" "health_check_http" {
 resource "google_compute_health_check" "health_check_https" {
   count   = var.health_check["type"] == "https" ? 1 : 0
   project = var.project_id
-  name    = "hc-http-${var.name}-${random_id.suffix.hex}}"
+  name    = "hc-http-${var.name}-${random_id.suffix.hex}"
 
   timeout_sec         = var.health_check["timeout_sec"]
   check_interval_sec  = var.health_check["check_interval_sec"]
