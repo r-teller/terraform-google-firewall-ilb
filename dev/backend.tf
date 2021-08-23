@@ -19,7 +19,7 @@ terraform {
   # and rerun terraform init and it will move the state file from the local folder to the GCS bucket
   # Note: bucket below has to be manually created before terraform init
   # backend "gcs" {
-  #   bucket = "sada-birm-tf-state"
-  #   prefix = "envs/dev/sada-birm/us-central1"
+  #   bucket = "[bucket-name]"
+  #   prefix = "envs/[env]/[project]/[region]"
   # }
 }
