@@ -13,17 +13,16 @@ variable "global_access" {
 
 variable "network" {
   description = "Name of the network to create resources in."
-  default     = "default"
 }
 
 variable "subnetwork" {
   description = "Name of the subnetwork to create resources in."
-  default     = "default"
 }
 
-variable "network_project" {
-  description = "Name of the project for the network. Useful for shared VPC. Default is var.project."
-  default     = ""
+variable "ip_address" {
+  description = "IP address of the internal load balancer, if empty one will be assigned. Default is empty."
+  type = string
+  default     = null
 }
 
 variable "name" {
@@ -90,10 +89,6 @@ variable "target_service_accounts" {
   default     = null
 }
 
-variable "ip_address" {
-  description = "IP address of the internal load balancer, if empty one will be assigned. Default is empty."
-  default     = null
-}
 
 variable "ip_protocol" {
   description = "The IP protocol for the backend and frontend forwarding rule. TCP or UDP."

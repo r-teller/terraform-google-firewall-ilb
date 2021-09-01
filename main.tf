@@ -36,6 +36,18 @@ resource "google_compute_region_backend_service" "backend_service" {
   google_compute_health_check.health_check_https[0].self_link]
 }
 
+resource "google_compute_address" "internal_address" {
+  count = var.ip_address != null ? 1 : 0
+  project      = var.project_id
+  name         = "address-${var.name}-${random_id.suffix.hex}"
+  region       = var.region
+  address_type = "INTERNAL"
+  purpose      = "GCE_ENDPOINT"
+  subnetwork   = data.google_compute_subnetwork.subnetwork.self_link
+  address      = var.ip_address
+}
+
+
 resource "google_compute_forwarding_rule" "forwarding_rule" {
   project               = var.project_id
   name                  = "forwarder-${var.name}-${random_id.suffix.hex}"
@@ -45,7 +57,7 @@ resource "google_compute_forwarding_rule" "forwarding_rule" {
   allow_global_access   = var.global_access
   load_balancing_scheme = "INTERNAL"
   backend_service       = google_compute_region_backend_service.backend_service.self_link
-  ip_address            = var.ip_address
+  ip_address            = can(google_compute_address.internal_address[0]) ? google_compute_address.internal_address[0].address : null
   ip_protocol           = var.ip_protocol
   ports                 = var.ports
   all_ports             = var.all_ports
