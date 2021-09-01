@@ -10,6 +10,7 @@ data "google_compute_network" "network" {
 data "google_compute_subnetwork" "subnetwork" {
   project = var.project_id
   name    = var.subnetwork
+  region  = var.region
 }
 
 resource "google_compute_region_backend_service" "backend_service" {
