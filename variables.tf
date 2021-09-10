@@ -21,7 +21,7 @@ variable "subnetwork" {
 
 variable "ip_address" {
   description = "IP address of the internal load balancer, if empty one will be assigned. Default is empty."
-  type = string
+  type        = string
   default     = null
 }
 

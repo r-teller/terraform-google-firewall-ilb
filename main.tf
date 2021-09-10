@@ -37,7 +37,7 @@ resource "google_compute_region_backend_service" "backend_service" {
 }
 
 resource "google_compute_address" "internal_address" {
-  count = var.ip_address != null ? 1 : 0
+  count        = var.ip_address != null ? 1 : 0
   project      = var.project_id
   name         = "address-${var.name}-${random_id.suffix.hex}"
   region       = var.region
@@ -66,20 +66,20 @@ resource "google_compute_forwarding_rule" "forwarding_rule" {
 
 resource "google_compute_route" "route" {
   for_each     = { for dest_range in var.dest_ranges : dest_range.range => dest_range }
-  project               = var.project_id
+  project      = var.project_id
   name         = "route-${var.name}-${replace(each.value.range, "//|\\./", "-")}-${random_id.suffix.hex}"
   network      = data.google_compute_network.network.self_link
   priority     = each.value.priority
   dest_range   = each.value.range
   next_hop_ilb = google_compute_forwarding_rule.forwarding_rule.id
-  tags = [var.region]
+  tags         = each.value.tags
 }
 
 resource "google_compute_health_check" "health_check_tcp" {
   # provider = google-beta
-  count    = var.health_check["type"] == "tcp" ? 1 : 0
-  project  = var.project_id
-  name     = "hc-tcp-${var.name}-${random_id.suffix.hex}"
+  count   = var.health_check["type"] == "tcp" ? 1 : 0
+  project = var.project_id
+  name    = "hc-tcp-${var.name}-${random_id.suffix.hex}"
 
   timeout_sec         = var.health_check["timeout_sec"]
   check_interval_sec  = var.health_check["check_interval_sec"]
@@ -104,9 +104,9 @@ resource "google_compute_health_check" "health_check_tcp" {
 
 resource "google_compute_health_check" "health_check_http" {
   # provider = google-beta
-  count    = var.health_check["type"] == "http" ? 1 : 0
-  project  = var.project_id
-  name     = "hc-http-${var.name}-${random_id.suffix.hex}"
+  count   = var.health_check["type"] == "http" ? 1 : 0
+  project = var.project_id
+  name    = "hc-http-${var.name}-${random_id.suffix.hex}"
 
   timeout_sec         = var.health_check["timeout_sec"]
   check_interval_sec  = var.health_check["check_interval_sec"]
@@ -133,7 +133,7 @@ resource "google_compute_health_check" "health_check_http" {
 resource "google_compute_health_check" "health_check_https" {
   count   = var.health_check["type"] == "https" ? 1 : 0
   project = var.project_id
-  name    = "hc-http-${var.name}-${random_id.suffix.hex}"
+  name    = "hc-https-${var.name}-${random_id.suffix.hex}"
 
   timeout_sec         = var.health_check["timeout_sec"]
   check_interval_sec  = var.health_check["check_interval_sec"]
